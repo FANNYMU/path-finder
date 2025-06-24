@@ -1,34 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect } from 'react'
 import './App.css'
+import { Canvas } from './components/Canvas'
+import ControlPanel from './components/ControlPanel'
+import { useGridStore } from './store/gridStore'
+import { getStateFromUrl } from './utils/urlUtils'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { setDimensions } = useGridStore()
+  
+  useEffect(() => {
+    const savedGrid = getStateFromUrl()
+    if (savedGrid && savedGrid.rows && savedGrid.cols) {
+      setDimensions(savedGrid.rows, savedGrid.cols)
+    }
+  }, [])
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      <header className="bg-blue-600 text-white p-4 shadow-md">
+        <h1 className="text-2xl font-bold">Path Finding Playground</h1>
+      </header>
+
+      <main className="flex flex-col md:flex-row flex-grow p-4 gap-4">
+        <div className="w-full md:w-3/4 bg-white rounded-lg shadow-md p-4">
+          <Canvas />
+        </div>
+
+        <div className="w-full md:w-1/4 bg-white rounded-lg shadow-md p-4">
+          <ControlPanel />
+        </div>
+      </main>
+
+      <footer className="bg-gray-200 p-2 text-center text-gray-600 text-sm">
+        Path Finding Playground | Build with React + TypeScript
+      </footer>
+    </div>
   )
 }
 
